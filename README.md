@@ -1,2 +1,2 @@
-# tbd
-An application for managing the residential life of the students at the African Leadership Academy. 
+# Quad+
+An application for managing the residential life of the African Leadership Academy students on the Quad premises. 
