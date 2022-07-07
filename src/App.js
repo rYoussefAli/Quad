@@ -1,79 +1,94 @@
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
-import { StyleSheet, Text, View, Linking, TouchableOpacity, navigate, Alert, Platform  } from 'react-native';
+import React, { Component, useState } from 'react';
+import { StyleSheet, Text, View, Linking, TouchableOpacity, Alert, Platform, Button, Image, useWindowDimensions, ScrollView, ImageBackground } from 'react-native';
+import 'react-native-gesture-handler';
+import { HomeScreen } from './HomeScreen';
+import { NotificationsScreen } from './NotificationsScreen';
+import { ProfileScreen } from './ProfileScreen';
+import { ReslifeScreen } from './Reslife';
+import { AcademicsScreen } from './Academics';
+import { SettingsScreen } from './Settings';
+import {
+  createDrawerNavigator,
+} from '@react-navigation/drawer';
+import { DrawerMenu } from './DrawerMenu';
+import Icon from 'react-native-vector-icons/Ionicons';
+import Login from './Login';
 
 export default function App() {
-  const kill_web = () => {
-    if (confirm("Do you really wanna change?\nThis process is irreversible")) {
 
-       cc == 'green' ? cc_('black') : cc_('green');
-    } }
+  const Drawer = createDrawerNavigator();
+  const Stack = createStackNavigator();
 
-  const kill_android = () => {
-    Alert.alert("Do you really wanna change?", "This process is irreversible", [
-      {
-        text: "OK",
-        onPress: () => { cc == 'green' ? cc_('red') : cc_('green') }
-
-      },
-      {
-        text: "Cancel",
-        onPress: () => {console.log(Platform.OS)}
-      }
-    ])
-  }
-  const [cc, cc_] = useState("red");
-  const cv = () => {
+  const mainstyle = () => {
     return {
-      backgroundColor: cc,
-      padding: 12,
-      alignItems: 'center',
-      justifyContent: 'center',
-      margin: "auto",
-      width: "100%",
+      title: 'Welcome to the Quad',
+      headerStyle: { backgroundColor: "#12181f" },
+      headerTintColor: "#fff",
+      headerTitleAlign: 'center',
+      headerPressColor: 'red',
+      drawerIcon: ({ color }) => (
+        <Icon name='home-outline' size={22} color={color} />
+      )
 
     }
+  };
 
+  const [radiusS, changeradiusS] = useState(50)
+
+  const LoginContaierPage = () => {
+    return (
+      <Stack.Navigator>
+        <Stack.Screen name="Login" component={Login} options={styles.loginOP} />
+      </Stack.Navigator>
+
+    )
+  }
+
+
+  const Main = () => {
+    const Dimensions = useWindowDimensions();
+    return (
+      <Drawer.Navigator
+        initialRouteName="HomeScreen"
+        drawerContent={(props) => <DrawerMenu {...props} />}
+        screenOptions={{ // APPLY TO ALL SCREENS
+          drawerType: 'back',
+          swipeEdgeWidth: Dimensions.width / 4.5,
+          headerStyle: { backgroundColor: '#12181f' },
+          drawerActiveTintColor: '#009874',
+          drawerInactiveTintColor: '#fff',
+          headerShadowVisible: false,
+        }} >
+        {/* <Drawer.Screen name="Profile" component={ProfileScreen} options={profilestyle} /> */}
+        <Drawer.Screen name="HomeScreen" component={HomeScreen} options={mainstyle} />
+        <Drawer.Screen name="Notifications" component={NotificationsScreen} options={styles.notificationsOP} />
+        <Drawer.Screen name="Reslife" component={ReslifeScreen} options={styles.reslifeOP} />
+        <Drawer.Screen name="Academics" component={AcademicsScreen} options={styles.academicsOP} />
+        <Drawer.Screen name="Settings" component={SettingsScreen} options={styles.settingsOP} />
+      </Drawer.Navigator>
+
+
+    )
   };
 
   return (
 
+    <NavigationContainer>
+      <Stack.Navigator
+      initialRouteName='Logincontainer'
+      screenOptions={{
+        headerShown: false,
+      }}
+      >
+      <Stack.Screen name='LoginContainer' component={LoginContaierPage} options={styles.stackOP}/>
+      <Stack.Screen name='MainAppContainter' component={Main} options={styles.stackOP}/>
+      </Stack.Navigator>
+      <StatusBar style='light' />
+    </NavigationContainer>
 
-
-    <View style={styles.container}>
-      <View style={{
-        flex: 1,
-        backgroundColor: '#705',
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'absolute',
-        top: "10%",
-        width: "100%",
-        height: "8%",
-      }}>
-        <Text style={{ fontSize: 24 }}>Quad+</Text>
-      </View>
-      <View style={{
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'absolute',
-        bottom: "10%",
-        left: 0,
-        width: "100%",
-
-      }}>
-        <Text>Powered by EVERSE</Text>
-        <TouchableOpacity onPress={Platform.OS == 'android' ? kill_android: () => {kill_web(); console.log(Platform.OS)}}>
-          <View style={cv()}>
-            <Text>
-              Tech Services, Ttech Fe Alrras 😉
-            </Text>
-          </View>
-
-        </TouchableOpacity>
-      </View>
-      <StatusBar style="auto" />
-    </View >
   );
 }
 
@@ -86,4 +101,39 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-});
+
+  settingsOP: {
+    headerTintColor: '#fff', drawerIcon: ({ color }) => (
+      <Icon name='cog-outline' size={22} color={color} />
+    )
+  },
+
+  academicsOP: {
+    headerTintColor: '#fff', drawerIcon: ({ color }) => (
+      <Icon name='school-outline' size={22} color={color} />
+    )
+
+  },
+
+  notificationsOP: {
+    headerTintColor: '#fff', drawerIcon: ({ color }) => (
+      <Icon name='notifications-outline' size={22} color={color} />
+    )
+  },
+
+  reslifeOP: {
+    headerTintColor: '#fff', drawerIcon: ({ color }) => (
+      <Icon name='pulse-outline' size={22} color={color} />
+    )
+  },
+
+  loginOP: {
+    drawerItemStyle: { display: 'none' }, // hide the login screen from the drawer by a simple way
+    headerShown: false,
+  },
+  stackOP: {
+    //headerShown: false,
+  }
+
+}
+);
